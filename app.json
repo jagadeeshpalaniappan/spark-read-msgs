@@ -1,0 +1,8 @@
+{
+  "name": "spark-read-msgs",
+  "version": "1.0.0",
+  "description": "Spark Read Messages",
+  "repository": "https://github.com/jagadeeshthegeek/spark-read-msgs",
+  "logo": "http://node-js-sample.herokuapp.com/node.svg",
+  "keywords": ["node", "json-server"]
+}

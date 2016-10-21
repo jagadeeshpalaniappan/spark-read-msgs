@@ -1,0 +1,32 @@
+{
+  "name": "spark-read-msgs",
+  "version": "1.0.0",
+  "description": "Spark Read Messages",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "body-parser": "~1.0.1",
+    "express": "~4.0.0",
+    "mongoose": "^4.6.4",
+    "morgan": "~1.0.0",
+    "unirest": "^0.5.1"
+  },
+  "engines": {
+    "node": "0.10.x",
+    "ejs": "1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jagadeeshthegeek/spark-read-msgs"
+  },
+  "keywords": [
+    "node"
+  ],
+  "author": "Jagadeesh Palaniapppan",
+  "contributors": [
+    "Jagadeesh Palaniapppan"
+  ],
+  "license": "MIT"
+}
