@@ -20,16 +20,23 @@ var _filterMessages = function(allMsgs, lastMsg){
         msg.msgId = msgId;
 
 
-        if(msgId === lastMsg.id){
-            console.log("Found Last Msg: "+ msgId);
-            foundLastMsg = true;
-        }
+        if(lastMsg){
 
-        if(!foundLastMsg){
+            if(msgId === lastMsg.id){
+                console.log("Found Last Msg: "+ msgId);
+                foundLastMsg = true;
+            }
 
+            if(!foundLastMsg){
+                notStoredMsgs.push(msg);
+            }
+
+        }else{
+
+            //ALL MSGS are pushed --Since, no meesage present in DB
             notStoredMsgs.push(msg);
-
         }
+
 
 
     }
