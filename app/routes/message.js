@@ -9,7 +9,7 @@ var headers = {
 };
 
 
-var _filterMessages = function(allMsgs, lastMsg){
+var _filterMessages = function (allMsgs, lastMsg) {
 
     var foundLastMsg = false;
 
@@ -20,23 +20,22 @@ var _filterMessages = function(allMsgs, lastMsg){
         msg.msgId = msgId;
 
 
-        if(lastMsg){
+        if (lastMsg) {
 
-            if(msgId === lastMsg.msgId){
-                console.log("Found Last Msg: "+ msgId);
+            if (msgId === lastMsg.msgId) {
+                console.log("Found Last Msg: " + msgId);
                 foundLastMsg = true;
             }
 
-            if(!foundLastMsg){
+            if (!foundLastMsg) {
                 notStoredMsgs.push(msg);
             }
 
-        }else{
+        } else {
 
             //ALL MSGS are pushed --Since, no meesage present in DB
             notStoredMsgs.push(msg);
         }
-
 
 
     }
@@ -48,7 +47,6 @@ var _filterMessages = function(allMsgs, lastMsg){
 };
 
 
-
 // ROUTES FOR OUR API
 // =============================================================================
 
@@ -58,41 +56,26 @@ var messageRouter = express.Router();
 // middleware to use for all requests
 messageRouter.use(function (req, res, next) {
     // do logging
-    console.log('Something is happening.');
+    //console.log('Something is happening.');
     next();
 });
 
 // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
 messageRouter.get('/', function (req, res) {
-    res.json({message: 'hooray! welcome to our api!'});
+    res.json({message: 'hooray! welcome to our SPARK READ MSGS api!'});
 });
+
 
 // on routes that end in /message
 // ----------------------------------------------------
 messageRouter.route('/message')
 
     // create a bear (accessed at POST http://localhost:8080/message)
-    .post(function (req, res) {
+    .post(function (httpReq, httpResp) {
 
-        /*
-         var tmpRqst = {
-         "id": "Y2lzY29zcGFyazovL3VzL1dFQkhPT0svZjRlNjA1NjAtNjYwMi00ZmIwLWEyNWEtOTQ5ODgxNjA5NDk3",
-         "name": "Guild Chat to http://requestb.in/1jw0w3x1",
-         "resource": "messages",
-         "event": "created",
-         "filter": "roomId=Y2lzY29zcGFyazovL3VzL1JPT00vY2RlMWRkNDAtMmYwZC0xMWU1LWJhOWMtN2I2NTU2ZDIyMDdi",
-         "data": {
-         "id": "Y2lzY29zcGFyazovL3VzL01FU1NBR0UvOGFlZDc2MjAtOTZmOS0xMWU2LTliZTAtYWI0OGM2MWZlZDJj",
-         "roomId": "Y2lzY29zcGFyazovL3VzL1JPT00vY2RlMWRkNDAtMmYwZC0xMWU1LWJhOWMtN2I2NTU2ZDIyMDdi",
-         "personId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS9lM2EyNjA4OC1hNmRiLTQxZjgtOTliMC1hNTEyMzkyYzAwOTg",
-         "personEmail": "person@example.com",
-         "created": "2015-12-04T17:33:56.767Z"
-         }
-         };
-         */
 
-        var msgRequest = req.body;
-        console.log(msgRequest);
+        var msgRequest = httpReq.body;
+        //console.log(msgRequest);
 
         var msgId = msgRequest.data.id;
 
@@ -107,40 +90,26 @@ messageRouter.route('/message')
             .url(allMsgEndPoint)
             .query(requestBody)
             .send()
-            .end(function (response) {
+            .end(function (sparkApiMsgsReadResp) {
                 //console.log('HTTP RESPONSE STATUS::'+response.status);
-                if (response.status !== 200) {
-                    console.log(response.status);
-                    console.log(response.body);
+                if (sparkApiMsgsReadResp.status !== 200) {
+                    console.log(sparkApiMsgsReadResp.status);
+                    console.log(sparkApiMsgsReadResp.body);
+                    httpResp.json({message: 'ERROR: WHILE GETTING ALL MSGS FROM SPARK API'});
+
                 } else {
 
-
-                    //var json = JSON.parse(response.body);
-                    //console.log(response.body);
-
-                    var allMsgs = response.body.items;
-
-                    /*
-                    var updatedMsgs = [];
-                    for (var i = 0, len = allMsgs.length; i < len; i++) {
-                        var msg = allMsgs[i];
-                        var msgId = msg.id;
-                        msg.msgId = msgId;
-                        updatedMsgs.push(msg);
-                    }
-
-                    console.log(updatedMsgs);
-                    */
-
+                    var allMsgs = sparkApiMsgsReadResp.body.items;
 
                     Message.findOne().sort({created: -1}).exec(function (err, lastMsg) {
 
-                        if(err){
+                        if (err) {
+                            httpResp.json({message: 'ERROR: WHILE GETTING last MSG FROM DB'});
                             throw err;
 
-                        }else{
+                        } else {
 
-                            console.log("lastMsg:: $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+                            console.log("$$$$$$$$$$$ lastMsg:: $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
                             console.log(JSON.stringify(lastMsg));
 
                             var notStoredMsgs = _filterMessages(allMsgs, lastMsg);
@@ -151,37 +120,19 @@ messageRouter.route('/message')
                             Message.insertMany(notStoredMsgs)
                                 .then(function (msgsDocs) {
                                     //console.log(msgsDocs);
-
-
-                                    res.json({message: 'Message Inserted!'});
+                                    httpResp.json({message: 'MESSAGES PUSHED SUCCESSFULLY IN DB'});
 
                                 })
                                 .catch(function (err) {
                                     /* Error handling */
+                                    httpResp.json({message: 'BUlK MESSAGE PUSH -FAILURE!'});
                                     console.log(err);
                                 });
-
 
                         }
 
 
-
                     });
-
-
-
-
-                    /*
-                     var bear = new Message();		// create a new instance of the Message model
-                     bear.name = req.body.name;  // set the message name (comes from the request)
-
-                     bear.save(function (err) {
-                     if (err)
-                     res.send(err);
-
-                     res.json({message: 'Message created!'});
-                     });
-                     */
 
 
                 }
