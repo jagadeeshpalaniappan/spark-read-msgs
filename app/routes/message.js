@@ -22,7 +22,7 @@ var _filterMessages = function(allMsgs, lastMsg){
 
         if(lastMsg){
 
-            if(msgId === lastMsg.id){
+            if(msgId === lastMsg.msgId){
                 console.log("Found Last Msg: "+ msgId);
                 foundLastMsg = true;
             }
