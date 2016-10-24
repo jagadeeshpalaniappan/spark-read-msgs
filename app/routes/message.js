@@ -140,13 +140,13 @@ messageRouter.route('/message')
 
                         }else{
 
-                            console.log("lastMsg:: ");
+                            console.log("lastMsg:: $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
                             console.log(lastMsg);
 
                             var notStoredMsgs = _filterMessages(allMsgs, lastMsg);
 
                             console.log("notStoredMsgs:: ");
-                            console.log(notStoredMsgs);
+                            console.log(notStoredMsgs.length);
 
                             Message.insertMany(notStoredMsgs)
                                 .then(function (msgsDocs) {
