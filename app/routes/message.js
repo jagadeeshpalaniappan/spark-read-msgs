@@ -25,7 +25,7 @@ var _filterMessages = function(allMsgs, lastMsg){
             foundLastMsg = true;
         }
 
-        if(foundLastMsg && (msgId !== lastMsg.id)){
+        if(!foundLastMsg){
 
             notStoredMsgs.push(msg);
 
