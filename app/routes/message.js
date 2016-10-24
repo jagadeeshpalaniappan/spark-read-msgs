@@ -141,7 +141,7 @@ messageRouter.route('/message')
                         }else{
 
                             console.log("lastMsg:: $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-                            console.log(lastMsg);
+                            console.log(JSON.stringify(lastMsg));
 
                             var notStoredMsgs = _filterMessages(allMsgs, lastMsg);
 
